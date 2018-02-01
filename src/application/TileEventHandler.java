@@ -17,6 +17,7 @@ public class TileEventHandler extends EventController {
     	tile.setOnMouseEntered(e -> {
         	tile.setFill(hoverColor);
         	gridController.getCoordinateLabel().setText(tile.getVertex().toString());
+
         });
         
     	tile.setOnMouseExited(e -> {

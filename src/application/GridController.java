@@ -1,6 +1,8 @@
 package application;
 
 
+import java.util.ArrayList;
+
 import graph.*;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -9,6 +11,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 
 public class GridController {
 	
@@ -20,6 +23,7 @@ public class GridController {
 	@FXML private CheckBox centerSelector;
 	@FXML private Label coordinateLabel;
 	
+	private Graph graph;
 	private TileEventHandler tileEventHandler;
 		
 	@FXML
@@ -27,9 +31,10 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(20, 20, new Hexagon());
-		Graph<Vertex> graph = graphFactory.buildGraph();
-		buildTiles("Hexagon", 10, graph);
+		GraphFactory graphFactory = new GraphFactory(5, 5, new Triangle());
+		graph = graphFactory.buildGraph();
+		buildTiles("Triangle", 40, graph);
+		buildConnections();
 		handleCheckBoxes();
 	}
 	
@@ -41,7 +46,7 @@ public class GridController {
 			eventController.receiveControllerInjection(this);
 		}
 	}
-	private void buildTiles(String tileType, int radius, Graph<Vertex> graph) {    
+	private void buildTiles(String tileType, int radius, Graph graph) {    
 	    
 		for(Vertex vertex : graph.getAllVertices()) {
 			Tile tile = null;
@@ -51,12 +56,25 @@ public class GridController {
 				case "Triangle" : tile = new TriangleTile(vertex, radius); break;
 				default : break;
 			}
-			
+			//System.out.println(vertex.toString() + "= " + vertex.getGUIComponenet());
 			CenterSelector centerSelector = new CenterSelector(tile, tile.getRadius());
+			centerSelector.setMouseTransparent(true);
 			tileEventHandler.hoverHandler(tile);
 			this.group.getChildren().addAll(tile, centerSelector);
 		}
 		nodePane.setScaleY(-1);
+	}
+	private void buildConnections() {
+		ArrayList<Line> connections = new ArrayList<>();
+		for(Node node : group.getChildren()) {
+			if(node instanceof Tile) {
+				Tile tile = (Tile) node;
+		    	for(Vertex vertex : graph.getAdjacentVertices(tile.getVertex())) {
+		    		connections.add(new Connection(tile, (Tile) vertex.getGUIComponenet()));
+		    	}
+			}
+		}
+		group.getChildren().addAll(connections);
 	}
 	
 	private void handleCheckBoxes() {
@@ -121,6 +139,9 @@ public class GridController {
 		}
 	}	
 	
+	public Graph getGraph() {
+		return this.graph;
+	}
 	public boolean xAxisSelected() {
 		return xAxis.isSelected();
 	}	
