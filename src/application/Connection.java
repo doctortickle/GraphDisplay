@@ -15,9 +15,10 @@ public class Connection extends Line {
 		setStartY(a.getLayoutY());
 		setEndX(b.getLayoutX());
 		setEndY(b.getLayoutY());
-		this.setStrokeLineCap(StrokeLineCap.SQUARE);
-		this.setStroke(Color.BLACK);
-		this.setStrokeWidth(3);
+		setStrokeLineCap(StrokeLineCap.SQUARE);
+		setStroke(Color.BLACK);
+		setVisible(false);
+		setMouseTransparent(true);
 	}
 	
 	

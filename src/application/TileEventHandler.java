@@ -16,12 +16,14 @@ public class TileEventHandler extends EventController {
     	
     	tile.setOnMouseEntered(e -> {
         	tile.setFill(hoverColor);
+        	showConnections(tile);
         	gridController.getCoordinateLabel().setText(tile.getVertex().toString());
 
         });
         
     	tile.setOnMouseExited(e -> {
         	tile.setFill(defaultColor);
+        	removeConnections(tile);
         	gridController.getCoordinateLabel().setText("No tile selected");
         });
     }
@@ -37,5 +39,17 @@ public class TileEventHandler extends EventController {
 		}
 		return defaultColor;
 	}
+    
+    private void showConnections(Tile tile) {
+    	for(Connection connection : tile.getConnections()) {
+    		connection.setVisible(true);
+    	}
+    }
+    
+    private void removeConnections(Tile tile) {
+    	for(Connection connection : tile.getConnections()) {
+    		connection.setVisible(false);
+    	}
+    }
     
 }

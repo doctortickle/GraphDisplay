@@ -2,7 +2,6 @@ package application;
 
 
 import java.util.ArrayList;
-
 import graph.*;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -31,9 +30,9 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(5, 5, new Triangle());
+		GraphFactory graphFactory = new GraphFactory(2, 2, new Hexagon());
 		graph = graphFactory.buildGraph();
-		buildTiles("Triangle", 40, graph);
+		buildTiles("Hexagon", 15, graph);
 		buildConnections();
 		handleCheckBoxes();
 	}
@@ -56,9 +55,7 @@ public class GridController {
 				case "Triangle" : tile = new TriangleTile(vertex, radius); break;
 				default : break;
 			}
-			//System.out.println(vertex.toString() + "= " + vertex.getGUIComponenet());
 			CenterSelector centerSelector = new CenterSelector(tile, tile.getRadius());
-			centerSelector.setMouseTransparent(true);
 			tileEventHandler.hoverHandler(tile);
 			this.group.getChildren().addAll(tile, centerSelector);
 		}
@@ -70,7 +67,9 @@ public class GridController {
 			if(node instanceof Tile) {
 				Tile tile = (Tile) node;
 		    	for(Vertex vertex : graph.getAdjacentVertices(tile.getVertex())) {
-		    		connections.add(new Connection(tile, (Tile) vertex.getGUIComponenet()));
+		    		Connection connection = new Connection(tile, (Tile) vertex.getGUIComponenet());
+		    		tile.addConnection(connection);
+		    		connections.add(connection);
 		    	}
 			}
 		}
