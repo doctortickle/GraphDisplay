@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ScreenController">
+   <children>
+      <BorderPane layoutX="-2.0" layoutY="-3.0" prefHeight="328.0" prefWidth="502.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <StackPane fx:id="nodePane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Group fx:id="group" StackPane.alignment="CENTER" />
+               </children></StackPane>
+         </center>
+         <bottom>
+            <HBox spacing="20.0" BorderPane.alignment="CENTER">
+               <children>
+                  <CheckBox fx:id="gridLines" mnemonicParsing="false" onAction="#handleGridLines" text="Show Grid Lines">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </CheckBox>
+                  <CheckBox mnemonicParsing="false" onAction="#handleXAxis" text="Show X-Axis" fx:id="xAxis">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </CheckBox>
+                  <CheckBox fx:id="yAxis" mnemonicParsing="false" text="Show Y-Axis">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </CheckBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label alignment="BOTTOM_RIGHT" text="Coordinates:">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="coordinateLabel">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </bottom></BorderPane>
+   </children>
+</AnchorPane>
