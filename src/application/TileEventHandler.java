@@ -1,16 +1,11 @@
 package application;
 import graph.Vertex;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 
-public class TileEventHandler {
+public class TileEventHandler extends EventController {
 	
-	@FXML 
-	Label coordinateLabel;
-
 	TileEventHandler() {
-
+		
 	};
 	
     public void hoverHandler(Tile tile) {
@@ -21,21 +16,22 @@ public class TileEventHandler {
     	
     	tile.setOnMouseEntered(e -> {
         	tile.setFill(hoverColor);
-        	//coordinateLabel.setText(tile.getVertex().toString());
+        	gridController.getCoordinateLabel().setText(tile.getVertex().toString());
         });
         
     	tile.setOnMouseExited(e -> {
         	tile.setFill(defaultColor);
+        	gridController.getCoordinateLabel().setText("No tile selected");
         });
     }
     
     private Color getDefaultColor(Vertex vertex) {
 		Color defaultColor = Color.TRANSPARENT;
 		
-		if (vertex.getX() == 0) {
+		if (vertex.getX() == 0 && gridController.yAxisSelected()) {
 			defaultColor = Color.YELLOW;
 		}
-		else if(vertex.getY() == 0) {
+		else if(vertex.getY() == 0 && gridController.xAxisSelected()) {
 			defaultColor = Color.GREEN;
 		}
 		return defaultColor;

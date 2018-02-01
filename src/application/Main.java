@@ -12,7 +12,7 @@ public class Main extends Application {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("Display.fxml"));
+			loader.setLocation(getClass().getResource("GraphMain.fxml"));
 			Parent root = loader.load();
 
 	        Scene scene = new Scene(root);    

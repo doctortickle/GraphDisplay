@@ -14,14 +14,18 @@ public class CenterSelector extends Circle {
 	
 	private void setCenterSelector(Point2D center, int radius) {
 		this.setRadius(radius*0.1);
+		this.setLayoutX(center.getX());
+		this.setLayoutY(center.getY());
+		setColor();
+	}
+	
+	public void setColor() {		
 		if(tile.getVertex().getX()%2 == 0) {
 			this.setFill(Color.RED);
 		}
 		else {
 			this.setFill(Color.BLUE);
 		}
-		this.setLayoutX(center.getX());
-		this.setLayoutY(center.getY());
 	}
 	
 }
