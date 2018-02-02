@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import graph.Vertex;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public abstract class Tile extends Polygon {
@@ -17,6 +18,9 @@ public abstract class Tile extends Polygon {
 		this.connections = new ArrayList<>();
 		buildTile();
 		assignTileToVertex();
+		setStroke(Color.BLACK);
+		setOpacity(0.5);
+		setFill(Color.TRANSPARENT);
 	}
 	
 	protected abstract void buildTile();

@@ -21,8 +21,6 @@ public class HexagonTile extends Tile {
 		double offset = (vertex.getX()%2)*0.5*vert;
 		this.setLayoutX(vertex.getX()*horiz);
 		this.setLayoutY(vertex.getY()*vert + Math.abs(offset));
-		this.setStroke(Color.BLACK);
-		this.setFill(Color.TRANSPARENT);
 	}
 	
 }

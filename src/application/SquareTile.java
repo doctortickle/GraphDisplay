@@ -19,8 +19,6 @@ public class SquareTile extends Tile {
 		double offset = radius - (2 * (radius - (radius/Math.sqrt(2))));
 		setLayoutX(vertex.getX()*(radius+offset));
 		setLayoutY(vertex.getY()*(radius+offset));
-		setStroke(Color.BLACK);
-		setFill(Color.TRANSPARENT);
 	}
 
 }

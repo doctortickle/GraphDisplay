@@ -35,8 +35,6 @@ public class TriangleTile extends Tile {
 		
 		this.setLayoutX(vertex.getX()*radius + offsetX);
 		this.setLayoutY(vertex.getY()*radius + offsetY);
-		this.setStroke(Color.BLACK);
-		this.setFill(Color.TRANSPARENT);
 	}
 	
 }

@@ -36,9 +36,9 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(30, 20, new Hexagon());
+		GraphFactory graphFactory = new GraphFactory(30, 20, new Triangle());
 		graph = graphFactory.buildGraph();
-		buildTiles("Hexagon", 15, graph);
+		buildTiles("Triangle", 15, graph);
 		buildConnections();
 		buildConsole();
 		handleCheckBoxes();
