@@ -1,6 +1,9 @@
 package application;
 
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import graph.*;
 import javafx.fxml.FXML;
@@ -8,6 +11,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -21,6 +26,7 @@ public class GridController {
 	@FXML private CheckBox yAxis;
 	@FXML private CheckBox centerSelector;
 	@FXML private Label coordinateLabel;
+	@FXML private ListView<String> output;
 	
 	private Graph graph;
 	private TileEventHandler tileEventHandler;
@@ -30,10 +36,11 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(2, 2, new Hexagon());
+		GraphFactory graphFactory = new GraphFactory(30, 20, new Hexagon());
 		graph = graphFactory.buildGraph();
 		buildTiles("Hexagon", 15, graph);
 		buildConnections();
+		buildConsole();
 		handleCheckBoxes();
 	}
 	
@@ -74,6 +81,13 @@ public class GridController {
 			}
 		}
 		group.getChildren().addAll(connections);
+	}
+	
+	private void buildConsole() {
+		Console console = new Console(output);
+		PrintStream ps = new PrintStream(console, true);
+		System.setOut(ps);
+		System.setErr(ps);
 	}
 	
 	private void handleCheckBoxes() {

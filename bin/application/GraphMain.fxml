@@ -4,6 +4,7 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -55,6 +56,9 @@
                   </Label>
                </children>
             </HBox>
-         </bottom></BorderPane>
+         </bottom>
+         <right>
+            <ListView fx:id="output" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </right></BorderPane>
    </children>
 </AnchorPane>
