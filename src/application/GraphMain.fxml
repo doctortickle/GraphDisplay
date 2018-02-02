@@ -56,7 +56,7 @@
             <ListView fx:id="output" BorderPane.alignment="CENTER" />
          </right>
          <center>
-            <ScrollPane BorderPane.alignment="CENTER">
+            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
                <content>
                   <StackPane fx:id="nodePane">
                      <children>
