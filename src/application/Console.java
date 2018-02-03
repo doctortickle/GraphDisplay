@@ -2,11 +2,10 @@ package application;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 import javafx.application.Platform;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+
 
 public class Console extends OutputStream {
 	

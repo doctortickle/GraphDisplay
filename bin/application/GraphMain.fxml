@@ -60,7 +60,7 @@
                <content>
                   <StackPane fx:id="nodePane">
                      <children>
-                        <Group fx:id="group" StackPane.alignment="CENTER" />
+                        <Group fx:id="superGroup" StackPane.alignment="CENTER" />
                      </children>
                   </StackPane>
                </content>

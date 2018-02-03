@@ -3,19 +3,20 @@ import java.util.ArrayList;
 
 import graph.Vertex;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 public abstract class Tile extends Polygon {
 	
 	protected Vertex vertex;
-	protected ArrayList<Connection> connections;
+	protected Group connectionsGroup;
+	protected Color defaultColor, axisColor;
 	protected int radius;
 	
 	public Tile(Vertex vertex, int radius) {
 		this.vertex = vertex;
 		this.radius = radius;
-		this.connections = new ArrayList<>();
 		buildTile();
 		assignTileToVertex();
 		setStroke(Color.BLACK);
@@ -29,10 +30,6 @@ public abstract class Tile extends Polygon {
 		vertex.setGUIComponent(this);
 	}
 	
-	public void addConnection(Connection connection) {
-		connections.add(connection);
-	}
-	
 	public Vertex getVertex() {
 		return this.vertex;
 	}
@@ -41,8 +38,16 @@ public abstract class Tile extends Polygon {
 		return this.radius;
 	}
 	
-	public ArrayList<Connection> getConnections() {
-		return connections;
+	public void buildConnections() {
+		connectionsGroup = new Group();
+    	for(Vertex connectedVertex : vertex.getConnectedVertices()) {
+    		Connection connection = new Connection(this, (Tile) connectedVertex.getGUIComponenet());
+    		connectionsGroup.getChildren().add(connection);
+    	}
+	}
+	
+	public Group getConnections() {
+		return connectionsGroup;
 	}
 	
 	public Point2D getCenter() {

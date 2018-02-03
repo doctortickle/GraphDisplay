@@ -41,15 +41,11 @@ public class TileEventHandler extends EventController {
 	}
     
     private void showConnections(Tile tile) {
-    	for(Connection connection : tile.getConnections()) {
-    		connection.setVisible(true);
-    	}
+    	tile.getConnections().setVisible(true);
     }
     
     private void removeConnections(Tile tile) {
-    	for(Connection connection : tile.getConnections()) {
-    		connection.setVisible(false);
-    	}
+    	tile.getConnections().setVisible(false);
     }
     
 }

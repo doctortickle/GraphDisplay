@@ -1,10 +1,6 @@
 package application;
 
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import graph.*;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -12,14 +8,13 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 
 public class GridController {
 	
-	@FXML private Group group;
+	@FXML 	private Group superGroup;
+			private Group tileGroup, centerSelectorGroup;
 	@FXML private StackPane nodePane;
 	@FXML private CheckBox gridLines;
 	@FXML private CheckBox xAxis;
@@ -34,14 +29,16 @@ public class GridController {
 	@FXML
 	protected void initialize() {
 		
-		buildEventControllers();
-		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(30, 20, new Triangle());
-		graph = graphFactory.buildGraph();
-		buildTiles("Triangle", 20, graph);
-		buildConnections();
-		buildConsole();
-		handleCheckBoxes();
+		buildEventControllers(); // build all event controllers for this scene.
+		injectControllers( tileEventHandler ); // inject this scene controller into each event controller
+		GraphFactory graphFactory = new GraphFactory(20, 20, new Hexagon()); // prepare the factory for graph construction
+		graph = graphFactory.buildGraph(); //build the edge node graph
+		buildTiles("Hexagon", 20, graph); // build each individual tile
+		buildCenterSelectors(); // build centerSelectors;
+		buildConnections(); // build the connections
+		buildHoverHandler();
+		buildConsole(); // build the console 
+		handleCheckBoxes(); // handle the check box actions
 	}
 	
 	private void buildEventControllers() {
@@ -54,6 +51,7 @@ public class GridController {
 	}
 	private void buildTiles(String tileType, int radius, Graph graph) {    
 	    
+		tileGroup = new Group();
 		for(Vertex vertex : graph.getAllVertices()) {
 			Tile tile = null;
 			switch(tileType) {
@@ -62,25 +60,34 @@ public class GridController {
 				case "Triangle" : tile = new TriangleTile(vertex, radius); break;
 				default : break;
 			}
-			CenterSelector centerSelector = new CenterSelector(tile, tile.getRadius());
-			tileEventHandler.hoverHandler(tile);
-			this.group.getChildren().addAll(tile, centerSelector);
+			tileGroup.getChildren().add(tile);			
 		}
+		superGroup.getChildren().add(tileGroup);
 		nodePane.setScaleY(-1);
 	}
-	private void buildConnections() {
-		ArrayList<Line> connections = new ArrayList<>();
-		for(Node node : group.getChildren()) {
-			if(node instanceof Tile) {
-				Tile tile = (Tile) node;
-		    	for(Vertex vertex : graph.getAdjacentVertices(tile.getVertex())) {
-		    		Connection connection = new Connection(tile, (Tile) vertex.getGUIComponenet());
-		    		tile.addConnection(connection);
-		    		connections.add(connection);
-		    	}
-			}
+	
+	private void buildCenterSelectors() {	
+		centerSelectorGroup = new Group();
+		for(Node node : tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			CenterSelector centerSelector = new CenterSelector(tile, tile.getRadius());
+			centerSelectorGroup.getChildren().add(centerSelector);
 		}
-		group.getChildren().addAll(connections);
+		superGroup.getChildren().add(centerSelectorGroup);
+	}
+	private void buildConnections() {
+		for(Node node : tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+	    	tile.buildConnections();
+	    	superGroup.getChildren().add(tile.getConnections());
+		}	
+	}
+	private void buildHoverHandler() {
+		tileEventHandler = new TileEventHandler();
+		for(Node node : tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+	    	tileEventHandler.hoverHandler(tile);
+		}	
 	}
 	
 	private void buildConsole() {
@@ -99,7 +106,7 @@ public class GridController {
 	@FXML
 	private void handleGridLines() {
 		if(!gridLines.isSelected()) {
-			for(Node node : group.getChildren()) {
+			for(Node node : superGroup.getChildren()) {
 				if(node instanceof Tile) {
 					Tile tile = (Tile) node;
 					tile.setStroke(Color.TRANSPARENT);
@@ -107,7 +114,7 @@ public class GridController {
 			}
 		}
 		if(gridLines.isSelected()) {
-			for(Node node : group.getChildren()) {
+			for(Node node : superGroup.getChildren()) {
 				if(node instanceof Tile) {
 					Tile tile = (Tile) node;
 					tile.setStroke(Color.BLACK);
@@ -117,7 +124,7 @@ public class GridController {
 	}
 	@FXML
 	private void handleXAxis() {
-		for(Node node : group.getChildren()) {
+		for(Node node : superGroup.getChildren()) {
 			if(node instanceof Tile) {
 				Tile tile = (Tile) node;
 				if(tile.getVertex().getY() == 0) {
@@ -128,7 +135,7 @@ public class GridController {
 	}	
 	@FXML
 	private void handleYAxis() {
-		for(Node node : group.getChildren()) {
+		for(Node node : superGroup.getChildren()) {
 			if(node instanceof Tile) {
 				Tile tile = (Tile) node;
 				if(tile.getVertex().getX() == 0) {
@@ -139,7 +146,7 @@ public class GridController {
 	}
 	@FXML
 	private void handleCenterSelectors() {
-		for(Node node : group.getChildren()) {
+		for(Node node : superGroup.getChildren()) {
 			if(node instanceof CenterSelector) {
 				CenterSelector centerDot = (CenterSelector) node;
 				if(centerSelector.isSelected()) {
