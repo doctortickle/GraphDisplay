@@ -16,7 +16,7 @@ import javafx.scene.shape.Line;
 public class GridController {
 	
 	@FXML private Group superGroup;
-	private Group tileGroup, xAxisGroup, yAxisGroup, centerSelectorGroup;
+	private Group tileGroup, centerSelectorGroup;
 	@FXML private StackPane nodePane;
 	@FXML private CheckBox gridLines;
 	@FXML private CheckBox xAxis;
@@ -33,7 +33,7 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory(30, 20, new Triangle());
+		GraphFactory graphFactory = new GraphFactory(3, 3, new Triangle());
 		graph = graphFactory.buildGraph();
 		
 		buildTiles("Triangle", 20, graph);
@@ -55,8 +55,6 @@ public class GridController {
 	private void buildTiles(String tileType, int radius, Graph graph) {    
 	    
 		tileGroup = new Group();
-		xAxisGroup = new Group();
-		yAxisGroup = new Group();
 		for(Vertex vertex : graph.getAllVertices()) {
 			Tile tile = null;
 			switch(tileType) {
@@ -65,20 +63,10 @@ public class GridController {
 				case "Triangle" : tile = new TriangleTile(vertex, radius); break;
 				default : break;
 			}
-			addToAxisGroup(tile);
-			tileGroup.getChildren().addAll(tile);
+			tileGroup.getChildren().add(tile);
 		}
-		superGroup.getChildren().addAll(tileGroup, xAxisGroup, yAxisGroup);
+		superGroup.getChildren().addAll(tileGroup);
 		nodePane.setScaleY(-1);
-	}
-	
-	private void addToAxisGroup(Tile tile) {
-		if(tile.getVertex().getX() == 0) {
-			yAxisGroup.getChildren().add(tile);
-		}
-		if(tile.getVertex().getY() == 0) {
-			xAxisGroup.getChildren().add(tile);
-		}
 	}
 	
 	private void buildCenterSelectors() {
@@ -143,17 +131,11 @@ public class GridController {
 	}
 	@FXML
 	private void handleXAxis() {
-		for(Node node: xAxisGroup.getChildren()) {
-			Tile tile = (Tile) node;
-			tileEventHandler.hoverHandler(tile);
-		}
+
 	}	
 	@FXML
 	private void handleYAxis() {
-		for(Node node: yAxisGroup.getChildren()) {
-			Tile tile = (Tile) node;
-			tileEventHandler.hoverHandler(tile);
-		}
+
 	}
 	@FXML
 	private void handleCenterSelectors() {
