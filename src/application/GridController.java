@@ -1,8 +1,5 @@
 package application;
 
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import graph.*;
@@ -12,14 +9,14 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 public class GridController {
 	
-	@FXML private Group group;
+	@FXML private Group superGroup;
+	private Group tileGroup, xAxisGroup, yAxisGroup, centerSelectorGroup;
 	@FXML private StackPane nodePane;
 	@FXML private CheckBox gridLines;
 	@FXML private CheckBox xAxis;
@@ -38,7 +35,10 @@ public class GridController {
 		injectControllers( tileEventHandler );
 		GraphFactory graphFactory = new GraphFactory(30, 20, new Triangle());
 		graph = graphFactory.buildGraph();
+		
 		buildTiles("Triangle", 20, graph);
+		buildCenterSelectors();
+		buildHoverHandlers();
 		buildConnections();
 		buildConsole();
 		handleCheckBoxes();
@@ -54,6 +54,9 @@ public class GridController {
 	}
 	private void buildTiles(String tileType, int radius, Graph graph) {    
 	    
+		tileGroup = new Group();
+		xAxisGroup = new Group();
+		yAxisGroup = new Group();
 		for(Vertex vertex : graph.getAllVertices()) {
 			Tile tile = null;
 			switch(tileType) {
@@ -62,15 +65,41 @@ public class GridController {
 				case "Triangle" : tile = new TriangleTile(vertex, radius); break;
 				default : break;
 			}
-			CenterSelector centerSelector = new CenterSelector(tile, tile.getRadius());
-			tileEventHandler.hoverHandler(tile);
-			this.group.getChildren().addAll(tile, centerSelector);
+			addToAxisGroup(tile);
+			tileGroup.getChildren().addAll(tile);
 		}
+		superGroup.getChildren().addAll(tileGroup, xAxisGroup, yAxisGroup);
 		nodePane.setScaleY(-1);
 	}
+	
+	private void addToAxisGroup(Tile tile) {
+		if(tile.getVertex().getX() == 0) {
+			yAxisGroup.getChildren().add(tile);
+		}
+		if(tile.getVertex().getY() == 0) {
+			xAxisGroup.getChildren().add(tile);
+		}
+	}
+	
+	private void buildCenterSelectors() {
+		centerSelectorGroup = new Group();
+		for(Node node : tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			centerSelectorGroup.getChildren().add(new CenterSelector(tile, tile.getRadius()));
+		}
+		superGroup.getChildren().add(centerSelectorGroup);
+	}	
+	
+	private void buildHoverHandlers() {
+		for(Node node : tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			tileEventHandler.hoverHandler(tile);
+		}
+	}
+	
 	private void buildConnections() {
 		ArrayList<Line> connections = new ArrayList<>();
-		for(Node node : group.getChildren()) {
+		for(Node node : superGroup.getChildren()) {
 			if(node instanceof Tile) {
 				Tile tile = (Tile) node;
 		    	for(Vertex vertex : graph.getAdjacentVertices(tile.getVertex())) {
@@ -80,7 +109,7 @@ public class GridController {
 		    	}
 			}
 		}
-		group.getChildren().addAll(connections);
+		superGroup.getChildren().addAll(connections);
 	}
 	
 	private void buildConsole() {
@@ -98,48 +127,43 @@ public class GridController {
 	}	
 	@FXML
 	private void handleGridLines() {
-		if(!gridLines.isSelected()) {
-			for(Node node : group.getChildren()) {
-				if(node instanceof Tile) {
-					Tile tile = (Tile) node;
-					tile.setStroke(Color.TRANSPARENT);
-				}
+		
+		for(Node node: tileGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			
+			if(gridLines.isSelected()) {
+				tile.setStroke(Color.BLACK);
 			}
-		}
-		if(gridLines.isSelected()) {
-			for(Node node : group.getChildren()) {
-				if(node instanceof Tile) {
-					Tile tile = (Tile) node;
-					tile.setStroke(Color.BLACK);
-				}
+			else {
+				tile.setStroke(Color.TRANSPARENT);
 			}
+			
 		}
+		
 	}
 	@FXML
 	private void handleXAxis() {
-		for(Node node : group.getChildren()) {
-			if(node instanceof Tile) {
-				Tile tile = (Tile) node;
-				if(tile.getVertex().getY() == 0) {
-					tileEventHandler.hoverHandler(tile);
-				};
-			}
+		for(Node node: xAxisGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			tileEventHandler.hoverHandler(tile);
 		}
 	}	
 	@FXML
 	private void handleYAxis() {
-		for(Node node : group.getChildren()) {
-			if(node instanceof Tile) {
-				Tile tile = (Tile) node;
-				if(tile.getVertex().getX() == 0) {
-					tileEventHandler.hoverHandler(tile);
-				};
-			}
+		for(Node node: yAxisGroup.getChildren()) {
+			Tile tile = (Tile) node;
+			tileEventHandler.hoverHandler(tile);
 		}
 	}
 	@FXML
 	private void handleCenterSelectors() {
-		for(Node node : group.getChildren()) {
+		if(centerSelector.isSelected()) {
+			centerSelectorGroup.setVisible(true);
+		}
+		else {
+			centerSelectorGroup.setVisible(false);
+		}
+		/*for(Node node : superGroup.getChildren()) {
 			if(node instanceof CenterSelector) {
 				CenterSelector centerDot = (CenterSelector) node;
 				if(centerSelector.isSelected()) {
@@ -149,7 +173,7 @@ public class GridController {
 					centerDot.setFill(Color.TRANSPARENT);
 				}
 			}
-		}
+		}*/
 	}	
 	
 	public Graph getGraph() {
