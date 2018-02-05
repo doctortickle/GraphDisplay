@@ -16,8 +16,9 @@ public class Main extends Application {
 			Parent root = loader.load();
 
 	        Scene scene = new Scene(root);    
-	        stage.setTitle("Grid Display");
+	        stage.setTitle("Graph Display");
 	        stage.setScene(scene);
+	        stage.setFullScreen(true);
 	        stage.show();
 	        
 		} catch(Exception e) {

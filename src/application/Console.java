@@ -2,22 +2,20 @@ package application;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
-
 import javafx.application.Platform;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
 public class Console extends OutputStream {
 	
-    private ListView<String> output;
+    private TextArea output;
 
-    public Console(ListView<String> output)  {
+    public Console(TextArea output)  {
         this.output = output;
+        output.setEditable(false);
     }
     
     private void addText(String str) {
-    	Platform.runLater( () -> output.getItems().add(str) );
+    	Platform.runLater( () -> output.appendText(str) );
     }
 
 	@Override

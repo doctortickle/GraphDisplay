@@ -1,5 +1,5 @@
 package application;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import graph.Vertex;
 import javafx.geometry.Point2D;
@@ -9,17 +9,17 @@ import javafx.scene.shape.Polygon;
 public abstract class Tile extends Polygon {
 	
 	protected Vertex vertex;
-	protected ArrayList<Connection> connections;
+	protected HashSet<Connection> connections;
 	protected Color defaultColor;
 	protected int radius;
 	
 	public Tile(Vertex vertex, int radius) {
 		this.vertex = vertex;
 		this.radius = radius;
-		this.connections = new ArrayList<>();
+		this.connections = new HashSet<Connection>();
 		buildTile();
 		assignTileToVertex();
-		setDefaultColor(false, false);
+		setDefaultColor(Color.TRANSPARENT);
 		setStroke(Color.BLACK);
 		setOpacity(0.5);
 	}
@@ -30,16 +30,8 @@ public abstract class Tile extends Polygon {
 		vertex.setGUIComponent(this);
 	}
 	
-	public void setDefaultColor(boolean xAxis, boolean yAxis) {
-		if(xAxis) {
-			defaultColor = Color.YELLOW;
-		}
-		if(yAxis) {
-			defaultColor = Color.GREEN;
-		}
-		else {
-			defaultColor = Color.TRANSPARENT;
-		}
+	public void setDefaultColor( Color color ) {
+		defaultColor = color;
 		setFill(defaultColor);
 	}
 	
@@ -59,7 +51,7 @@ public abstract class Tile extends Polygon {
 		return this.radius;
 	}
 	
-	public ArrayList<Connection> getConnections() {
+	public HashSet<Connection> getConnections() {
 		return connections;
 	}
 	
