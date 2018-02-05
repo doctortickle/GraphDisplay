@@ -1,9 +1,12 @@
 package application;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import graph.*;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -11,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class GridController {
 	
@@ -32,13 +36,19 @@ public class GridController {
 	@FXML
 	protected void initialize() {
 		
+		buildGrid();		
+	}
+	
+	
+	private void buildGrid() {
+		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory( 10, 10, 0, new Square2D() );
+		GraphFactory graphFactory = new GraphFactory( 10, 10, 0, new Triangle2D() );
 		graphFactory.buildGraph();
 		graph = graphFactory.getGraph();
 		
-		buildTiles( "Square", 20, graph );
+		buildTiles( "Triangle", 20, graph );
 		buildCenterSelectors();
 		buildHoverHandlers();
 		buildConnections();

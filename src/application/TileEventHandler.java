@@ -12,7 +12,7 @@ public class TileEventHandler extends EventController {
         	tile.setFill(hoverColor);
         	tile.getConnections().forEach( c -> c.setVisible( gridController.connectionsSelected() ) );
         	gridController.getCoordinateLabel().setText(tile.getVertex().toString());   
-        	System.out.println("New tile selected.");
+        	System.out.println("Test.");
         });
 
     	tile.setOnMouseExited(e -> {

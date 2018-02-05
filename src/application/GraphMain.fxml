@@ -63,7 +63,7 @@
          <center>
             <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
                <content>
-                  <StackPane fx:id="nodePane">
+                  <StackPane fx:id="nodePane" prefWidth="800.0">
                      <children>
                         <Group fx:id="superGroup" StackPane.alignment="CENTER" />
                      </children>
