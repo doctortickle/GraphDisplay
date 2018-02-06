@@ -1,18 +1,19 @@
 package application;
 
+import graph.Vertex;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
 
 public class Connection extends Line {
 	
-	public Connection( Tile a, Tile b ) {
+	public Connection( Vertex a, Vertex b ) {
 		
 		drawLine( a, b );
 		
 	}
 	
-	private void drawLine( Tile a, Tile b ) {
+	private void drawLine( Vertex a, Vertex b ) {
 		
 		setStartX( a.getLayoutX() );
 		setStartY( a.getLayoutY() );
@@ -20,7 +21,6 @@ public class Connection extends Line {
 		setEndY( b.getLayoutY() );
 		setStrokeLineCap( StrokeLineCap.SQUARE );
 		setStroke( Color.BLACK );
-		setVisible( false );
 		setMouseTransparent( true );
 		
 	}

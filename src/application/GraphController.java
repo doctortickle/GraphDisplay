@@ -2,6 +2,8 @@ package application;
 
 import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.Vector;
+
 import graph.*;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -11,13 +13,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 
 
 public class GraphController {
 	
 	@FXML private Group superGroup;
-	private Group tileGroup, centerSelectorGroup, connectionsGroup;
-	private HashSet<Tile> xAxisTiles, yAxisTiles, zAxisTiles;
+	private Group vertexGroup, centerSelectorGroup, connectionsGroup;
+	private HashSet<Vertex> xAxisVertices, yAxisVertices, zAxisVertices;
 	@FXML private StackPane nodePane;
 	@FXML private CheckBox gridLines;
 	@FXML private CheckBox xAxis;
@@ -28,30 +31,18 @@ public class GraphController {
 	@FXML private TextArea output;
 	
 	private Graph graph;
-	private EdgeMap edgeMap;
-	private String tileShape;
+	private ShapeFactory shapeFactory;
+	private String shape;
 	private int x, y;
-	private TileEventHandler tileEventHandler;
 		
 	@FXML
 	protected void initialize() {
 		
-				
+		init();
+		
 	}
 	
-	public void init(String shape, int x, int y) {
-		
-		switch( shape ) {
-		
-			case "Triangle" : this.edgeMap = new Triangle2D(); break;
-			case "Square" : this.edgeMap = new Square2D(); break;
-			case "Hexagon" : this.edgeMap = new Hexagon2D(); break;
-			default : this.edgeMap = new Square2D();
-		}
-		
-		this.x = x;
-		this.y = y;
-		this.tileShape = shape;
+	public void init() {
 		
 		buildGrid();
 		
@@ -60,13 +51,11 @@ public class GraphController {
 	
 	private void buildGrid() {
 		
-		buildEventControllers();
-		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory( x, y, 0, edgeMap );
+		GraphFactory graphFactory = new GraphFactory( 10, 10, 0, new Hexagon2D() );
 		graphFactory.buildGraph();
 		graph = graphFactory.getGraph();
 		
-		buildTiles( tileShape, 20, graph );
+		buildVertices();
 		buildCenterSelectors();
 		buildHoverHandlers();
 		buildConnections();
@@ -75,101 +64,85 @@ public class GraphController {
 		
 	}
 	
-	private void buildEventControllers() {
-		
-		tileEventHandler = new TileEventHandler();
-		
-	}	
-	private void injectControllers(EventController... eventControllers) {
-		
-		for( EventController eventController : eventControllers ) {
-			
-			eventController.receiveControllerInjection( this );
-			
-		}
-		
-	}
-	private void buildTiles( String tileType, int radius, Graph graph ) {    
+	private void buildVertices() {    
 	    
-		tileGroup = new Group();
-		xAxisTiles = new HashSet<Tile>();
-		yAxisTiles = new HashSet<Tile>();
-		zAxisTiles = new HashSet<Tile>();
+		vertexGroup = new Group();
+		xAxisVertices = new HashSet< Vertex >();
+		yAxisVertices = new HashSet< Vertex >();
+		zAxisVertices = new HashSet< Vertex >();
 		
-		for( Vertex vertex : graph.getAllVertices() ) {
+		graph.getAllVertices().forEach( v -> {
+		
+			if(v.getX() == 0) { yAxisVertices.add( v ); }
+			if(v.getY() == 0) { xAxisVertices.add( v ); }
+			if(v.getZ() == 0) { zAxisVertices.add( v ); }
+			vertexGroup.getChildren().add( v );
 			
-			Tile tile = null;	
-			switch( tileType ) {
-			
-				case "Hexagon": tile = new HexagonTile( vertex, radius ); break;
-				case "Square" : tile = new SquareTile( vertex, radius ); break;
-				case "Triangle" : tile = new TriangleTile( vertex, radius ); break;
-				default : break;
-				
-			}
-			if ( tile.getVertex().getX() == 0 ) {
-				
-				yAxisTiles.add( tile );
-				
-			}
-			if( tile.getVertex().getY() == 0 ) {
-				
-				xAxisTiles.add( tile );
-				
-			}
-			if( tile.getVertex().getZ() == 0 ) {
-				
-				zAxisTiles.add( tile );
-				
-			}
-			tileGroup.getChildren().add(tile);
-			
-		}
-		superGroup.getChildren().addAll( tileGroup );
+		});
+		
+		superGroup.getChildren().addAll( vertexGroup );
 		nodePane.setScaleY( -1 );
 	}
+	
 	
 	private void buildCenterSelectors() {
 		
 		centerSelectorGroup = new Group();
-		for( Node node : tileGroup.getChildren() ) {
-			
-			Tile tile = ( Tile ) node;
-			centerSelectorGroup.getChildren().add( new CenterSelector( tile, tile.getRadius() ) );
-			
-		}
+		vertexGroup.getChildren().forEach( v -> 
+			centerSelectorGroup.getChildren().add( new CenterSelector( ( Vertex ) v ) ) 
+		);
 		superGroup.getChildren().add( centerSelectorGroup );
 		
 	}	
 	
 	private void buildHoverHandlers() {
 		
-		for( Node node : tileGroup.getChildren() ) {
-			
-			Tile tile = ( Tile ) node;
-			tileEventHandler.hoverHandler( tile );
+		Color hoverColor = Color.GOLD;
 		
-		}
+		vertexGroup.getChildren().forEach( v -> {
+			
+	    	v.setOnMouseEntered(e -> {
+	    		
+	        	( ( Vertex ) v ).setFill( hoverColor );
+	        	( ( Vertex ) v ).getConnections().setVisible( connectionsSelected() );
+	        	coordinateLabel.setText( v.toString() ); 
+	        	
+	        });	
+			
+	    	v.setOnMouseExited(e -> {
+	    		
+	    		( ( Vertex ) v ).setFill( ( ( Vertex ) v ).getDefaultColor() );
+	    		( ( Vertex ) v ).getConnections().setVisible( false );
+	        	coordinateLabel.setText( "No tile selected" );
+	        	
+	        });   
+	    	
+		});
 		
 	}
+	
 	
 	private void buildConnections() {
 		
 		connectionsGroup = new Group();
 		
-		for( Node node : tileGroup.getChildren() ) {
-				
-				Tile tile = ( Tile ) node;
-				
-		    	for( Vertex vertex : graph.getAdjacentVertices( tile.getVertex() ) ) {
-		    		
-		    		Connection connection = new Connection( tile, ( Tile ) vertex.getGUIComponenet() );
-		    		tile.addConnection( connection );
-		    		connectionsGroup.getChildren().add( connection );
-		    	}		
+		vertexGroup.getChildren().forEach( v -> { 
 			
-		}
-		superGroup.getChildren().addAll(connectionsGroup);
+			Group connections = new Group();
+			
+			graph.getAdjacentVertices( (Vertex) v ).forEach( c -> {
+				
+				connections.getChildren().add( new Connection ( ( Vertex ) v, c ) );
+				
+			});
+			
+			connections.setVisible( false );
+			( ( Vertex ) v ).addConnections( connections );
+			connectionsGroup.getChildren().add( connections );
+			
+		});
+		
+		superGroup.getChildren().addAll( connectionsGroup );
 		
 	}
 	
@@ -194,78 +167,39 @@ public class GraphController {
 	@FXML
 	private void handleGridLines() {
 		
-		for( Node node: tileGroup.getChildren() ) {
+		vertexGroup.getChildren().forEach( v -> {
 			
-			Tile tile = ( Tile ) node;
+			if( gridLines.isSelected() ) { ( ( Vertex ) v).setStroke( Color.BLACK ); }
+			else { ( ( Vertex ) v).setStroke( Color.TRANSPARENT ); }
 			
-			if( gridLines.isSelected() ) {
-				
-				tile.setStroke( Color.BLACK );
-				
-			}
-			
-			else {
-				
-				tile.setStroke( Color.TRANSPARENT );
-				
-			}
-			
-		}
+		});
 		
 	}
 	
 	@FXML
 	private void handleXAxis() {
 		
-		for( Tile tile : xAxisTiles ) {
+		xAxisVertices.forEach( v -> {
 			
-			if( xAxis.isSelected() ) {
-				
-				tile.setDefaultColor( Color.GREEN );
-				
-			}
+			if( xAxis.isSelected() ) { v.setDefaultColor( Color.GREEN ); }
+			else if ( v.getX() == 0 && yAxisSelected() ) { v.setDefaultColor( Color.YELLOW ); }
+			else { v.setDefaultColor( Color.TRANSPARENT ); }
 			
-			else if( tile.getVertex().getX() == 0 && yAxisSelected() ) {
-				
-				tile.setDefaultColor( Color.YELLOW );
-				
-			}
-			
-			else {
-				
-				tile.setDefaultColor( Color.TRANSPARENT );
-				
-			}
-			
-		}
-		
+		});
+
 	}	
 	
 	@FXML
 	private void handleYAxis() {
 		
-		for( Tile tile : yAxisTiles ) {
+		yAxisVertices.forEach( v -> {
 			
-			if( yAxis.isSelected() ) {
-				
-				tile.setDefaultColor( Color.YELLOW );
-				
-			}
+			if( yAxis.isSelected() ) { v.setDefaultColor( Color.YELLOW ); }
+			else if ( v.getY() == 0 && xAxisSelected() ) { v.setDefaultColor( Color.GREEN ); }
+			else { v.setDefaultColor( Color.TRANSPARENT ); }
 			
-			else if( tile.getVertex().getY() == 0 && xAxisSelected() ) {
-				
-				tile.setDefaultColor( Color.GREEN );
-				
-			}
-			
-			else {
-				
-				tile.setDefaultColor( Color.TRANSPARENT );
-				
-			}
-			
-		}
-		
+		});
+
 	}
 	
 	@FXML
@@ -304,5 +238,6 @@ public class GraphController {
 		return coordinateLabel;
 		
 	}
+	
 	
 }

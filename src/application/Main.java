@@ -15,11 +15,11 @@ public class Main extends Application {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation( getClass().getResource( "../splash/Splash.fxml" ) );
+			loader.setLocation( getClass().getResource( "../application/Graph.fxml" ) );
 			Parent root = loader.load();
 
 	        Scene scene = new Scene( root );    
-	        stage.initStyle( StageStyle.UNDECORATED );
+	        //stage.initStyle( StageStyle.UNDECORATED );
 	        stage.setScene( scene );
 	        stage.show();
 	        
