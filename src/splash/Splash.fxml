@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mouseTransparent="true" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splash.SplashController">
+   <children>
+      <ImageView fx:id="image" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../splash/splash.jpg" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="RussellCode">
+         <font>
+            <Font name="Magneto Bold" size="48.0" />
+         </font></Text>
+   </children>
+</StackPane>

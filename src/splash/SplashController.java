@@ -1,4 +1,4 @@
-package application;
+package splash;
 
 import java.io.IOException;
 
@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -14,9 +15,13 @@ public class SplashController {
 	
 	@FXML 
 	private StackPane rootPane;
+	@FXML
+	private ImageView image;
 	
 	@FXML void initialize() {
+		
 		new SplashScreen().start();
+		
 	}
 	
 	class SplashScreen extends Thread {
@@ -26,7 +31,8 @@ public class SplashController {
 			
 			try {
 				
-				Thread.sleep(5000);
+				image.fitWidthProperty().bind( rootPane.widthProperty() ); 
+				Thread.sleep( 3000 );
 				
 				Platform.runLater( new Runnable() {
 					
@@ -35,15 +41,21 @@ public class SplashController {
 						
 						Parent root = null;
 						try {
-							root = FXMLLoader.load( getClass().getResource( "GraphMain.FXML" ) );
-						} catch (IOException e) {
+							
+							root = FXMLLoader.load( getClass().getResource( "../mainMenu/MainMenu.FXML" ) );
+							
+						} catch ( IOException e ) {
+							
 							e.printStackTrace();
+							
 						}
-						Scene scene = new Scene(root);
+						
+						Scene scene = new Scene( root );
 						Stage stage = new Stage();
 				        stage.setScene(scene);
+				        stage.setResizable(false);
+				        stage.setTitle( "RussellCode" );
 				        stage.show();
-				        
 				        rootPane.getScene().getWindow().hide();
 						
 					}

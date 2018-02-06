@@ -2,13 +2,13 @@ package application;
 
 public abstract class EventController {
 	
-	protected GridController gridController;
+	protected GraphController gridController;
 	
 	EventController() {
 		
 	}
 	
-	public void receiveControllerInjection(GridController gridController) {
+	public void receiveControllerInjection(GraphController gridController) {
 		this.gridController = gridController;
 	}
 	

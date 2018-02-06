@@ -1,12 +1,9 @@
 package application;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import graph.*;
-import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -14,9 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
-public class GridController {
+
+public class GraphController {
 	
 	@FXML private Group superGroup;
 	private Group tileGroup, centerSelectorGroup, connectionsGroup;
@@ -31,12 +28,33 @@ public class GridController {
 	@FXML private TextArea output;
 	
 	private Graph graph;
+	private EdgeMap edgeMap;
+	private String tileShape;
+	private int x, y;
 	private TileEventHandler tileEventHandler;
 		
 	@FXML
 	protected void initialize() {
 		
-		buildGrid();		
+				
+	}
+	
+	public void init(String shape, int x, int y) {
+		
+		switch( shape ) {
+		
+			case "Triangle" : this.edgeMap = new Triangle2D(); break;
+			case "Square" : this.edgeMap = new Square2D(); break;
+			case "Hexagon" : this.edgeMap = new Hexagon2D(); break;
+			default : this.edgeMap = new Square2D();
+		}
+		
+		this.x = x;
+		this.y = y;
+		this.tileShape = shape;
+		
+		buildGrid();
+		
 	}
 	
 	
@@ -44,11 +62,11 @@ public class GridController {
 		
 		buildEventControllers();
 		injectControllers( tileEventHandler );
-		GraphFactory graphFactory = new GraphFactory( 10, 10, 0, new Triangle2D() );
+		GraphFactory graphFactory = new GraphFactory( x, y, 0, edgeMap );
 		graphFactory.buildGraph();
 		graph = graphFactory.getGraph();
 		
-		buildTiles( "Triangle", 20, graph );
+		buildTiles( tileShape, 20, graph );
 		buildCenterSelectors();
 		buildHoverHandlers();
 		buildConnections();

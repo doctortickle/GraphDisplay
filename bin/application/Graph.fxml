@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GridController">
+<AnchorPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GraphController">
    <children>
       <BorderPane layoutX="-2.0" layoutY="-3.0" prefHeight="328.0" prefWidth="502.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
-            <HBox minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" BorderPane.alignment="CENTER">
                <children>
                   <CheckBox fx:id="gridLines" mnemonicParsing="false" onAction="#handleGridLines" text="Show Grid Lines">
                      <HBox.margin>
@@ -58,12 +58,12 @@
             </HBox>
          </bottom>
          <right>
-            <TextArea fx:id="output" BorderPane.alignment="CENTER" />
+            <TextArea fx:id="output" maxWidth="250.0" minWidth="250.0" BorderPane.alignment="CENTER" />
          </right>
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+            <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: #738196;" BorderPane.alignment="CENTER">
                <content>
-                  <StackPane fx:id="nodePane" prefWidth="800.0">
+                  <StackPane fx:id="nodePane" prefWidth="800.0" style="-fx-background-color: #738196;">
                      <children>
                         <Group fx:id="superGroup" StackPane.alignment="CENTER" />
                      </children>
