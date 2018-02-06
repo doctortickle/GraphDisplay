@@ -47,13 +47,17 @@ public class MainMenuController {
 				@Override
 				public void run() {
 						
-					FXMLLoader loader = new FXMLLoader( getClass().getResource( "../application/Graph.FXML" ) );
-					
+					FXMLLoader loader = new FXMLLoader( getClass().getResource( "../application/Graph.FXML" ) );	
 					Stage stage = new Stage();
+					
 			        try {
+			        	
 						stage.setScene( new Scene( loader.load() ) );
+						
 					} catch (IOException e) {
+						
 						e.printStackTrace();
+						
 					}
 			        
 					GraphController controller = loader.<GraphController>getController();

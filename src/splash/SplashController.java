@@ -5,25 +5,37 @@ import java.io.IOException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+/**
+ * SplashController controls the Splash.FXML file. This is the initial software display. After a 
+ * designated amount of time, the MainMenu.FXML is run.  
+ *
+ */
 public class SplashController {
 	
 	@FXML 
-	private StackPane rootPane;
+	private StackPane splashRoot;
 	@FXML
-	private ImageView image;
+	private ImageView splashImage;
 	
+	/**
+	 * Called after all @FXML annotated members have been injected. Starts a new thread "SplashScreen()".
+	 */
 	@FXML void initialize() {
 		
-		new SplashScreen().start();
+		new SplashScreen().start(); //Start SplashScreen thread.
 		
 	}
 	
+	/**
+	 * Inner class that extends thread. Displays the splash screen for a designated amount of time then loads
+	 * MainMenu.FXML, sets a new stage, and displays the main menu. Hides the splash screen.
+	 *
+	 */
 	class SplashScreen extends Thread {
 		
 		@Override
@@ -31,18 +43,20 @@ public class SplashController {
 			
 			try {
 				
-				image.fitWidthProperty().bind( rootPane.widthProperty() ); 
-				Thread.sleep( 3000 );
+				splashImage.fitWidthProperty().bind( splashRoot.widthProperty() );  // binds the image to the rootPane width.
+				Thread.sleep( 3000 ); // puts the thread (SplashScreen) to sleep in order to allow the splash to display long enough.
 				
-				Platform.runLater( new Runnable() {
+				Platform.runLater( new Runnable() { // Forces the main menu scene to load onto the JavaFX application thread when the SplashScreen thread is available.
 					
 					@Override
 					public void run() {
 						
-						Parent root = null;
+						FXMLLoader loader = new FXMLLoader( getClass().getResource( "../mainMenu/MainMenu.FXML" ) ); // Places MainMenu.FXML into the loader.
+						Stage stage = new Stage(); // Creates a new stage.
+						
 						try {
 							
-							root = FXMLLoader.load( getClass().getResource( "../mainMenu/MainMenu.FXML" ) );
+							stage.setScene( new Scene( loader.load() )  ); // Sets the scene using the root node of the loaded FXML document.
 							
 						} catch ( IOException e ) {
 							
@@ -50,13 +64,10 @@ public class SplashController {
 							
 						}
 						
-						Scene scene = new Scene( root );
-						Stage stage = new Stage();
-				        stage.setScene(scene);
-				        stage.setResizable(false);
-				        stage.setTitle( "RussellCode" );
-				        stage.show();
-				        rootPane.getScene().getWindow().hide();
+				        stage.setResizable(false); // Prevents user from resizing the window.
+				        stage.setTitle( "Test" ); // Sets the stage title.
+				        stage.show(); // Displays the stage.
+				        splashRoot.getScene().getWindow().hide(); // Hides the splash screen and presumably ends the SplashScreen thread.
 						
 					}
 					
