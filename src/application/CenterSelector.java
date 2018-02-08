@@ -8,7 +8,7 @@ public class CenterSelector extends Circle {
 	
 	public CenterSelector( Vertex v ) {
 		
-		setRadius( 5 );
+		setRadius( v.getRadius()/4 );
 		setLayoutX( v.getLayoutX() );
 		setLayoutY( v.getLayoutY() );
 		setMouseTransparent( true );
